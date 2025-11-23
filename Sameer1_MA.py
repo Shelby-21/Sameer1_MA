@@ -11,10 +11,10 @@ st.set_page_config(
     page_title="Dynamic Pricing Optimizer",
     page_icon="📈",
     layout="wide",
-    initial_sidebar_state="expanded" 
+    # Removed initial_sidebar_state="expanded"
 )
 
-# --- CUSTOM CSS (New Aesthetic: Light Mode / Professional Teal Accent) ---
+# --- CUSTOM CSS (Light Mode / Professional Teal Accent) ---
 st.markdown("""
 <style>
     /* Main container styling: Light Gray Background */
@@ -23,10 +23,10 @@ st.markdown("""
         color: #263238; /* Dark Slate Text */
     }
     
-    /* Sidebar Styling */
+    /* Sidebar Styling (Keeping in case user adds content later, but hidden by default) */
     [data-testid="stSidebar"] {
-        background-color: #ffffff; /* White sidebar */
-        border-right: 2px solid #00a896; /* Professional Teal Accent */
+        background-color: #ffffff; 
+        border-right: 2px solid #00a896; 
     }
     
     /* Metric Cards: Clean White Cards on Light Background */
@@ -64,9 +64,9 @@ st.markdown("""
     .recommendation[style*="#ffb300"] { border-left-color: #ffb300 !important; background: #fff8e1 !important; } /* Amber */
     .recommendation[style*="#d32f2f"] { border-left-color: #d32f2f !important; background: #ffebee !important; } /* Red */
     
-    /* Pricing Cards (Now in Sidebar) */
+    /* Pricing Cards (Relocated to Main Body) */
     .price-card {
-        background: #f5f5f5; /* Slightly darker background in sidebar */
+        background: #ffffff; /* White card */
         padding: 15px 10px;
         border-radius: 8px;
         text-align: center;
@@ -240,34 +240,7 @@ def main():
         discount = ((sum_indiv_opt - bundle_price) / sum_indiv_opt) * 100
         bundle_adoption = (len(customer_df[customer_df['Decision'] == 'Bundle']) / len(df)) * 100
 
-        # --- SIDEBAR: PRICING MIX (New Location) ---
-        with st.sidebar:
-            st.header("3. Optimal Pricing Mix")
-            st.markdown("These are the solver-calculated prices for **maximum revenue**:")
-            
-            # Bundle Price (Highlighted first)
-            st.markdown(f"""
-            <div class="price-card bundle-highlight">
-                <div class="price-title">ALL-IN BUNDLE</div>
-                <div class="price-tag">₹{bundle_price:,.0f}</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown("---")
-            st.subheader("Individual Product Prices")
-
-            # Individual Prices
-            for i, prod in enumerate(products):
-                p_opt = opt_prices[i]
-                clean_name = prod.replace("Samsung_", "").replace("_", " ")
-                st.markdown(f"""
-                <div class="price-card">
-                    <div class="price-title">{clean_name}</div>
-                    <div class="price-tag">₹{p_opt:,.0f}</div>
-                </div>
-                """, unsafe_allow_html=True)
-                
-        # --- MAIN PAGE TOP: AI STRATEGIC INSIGHTS (New Full-Width Location) ---
+        # --- MAIN PAGE TOP: AI STRATEGIC INSIGHTS (1) ---
         st.subheader("1. AI Strategic Insights")
         
         strategy_text = "Volume Driver" if discount > 15 else "Premium Extraction"
@@ -308,7 +281,7 @@ def main():
 
         st.write("---")
 
-        # --- MAIN PAGE MIDDLE: FINANCIAL METRICS (New Location) ---
+        # --- MAIN PAGE MIDDLE: FINANCIAL METRICS (2) ---
         st.subheader("2. Financial Overview")
         c1, c2, c3 = st.columns(3)
         with c1:
@@ -338,7 +311,38 @@ def main():
             
         st.write("---")
 
-        # --- MAIN PAGE BOTTOM: CHARTS & DATA (New 1:1 Column Split) ---
+        # --- NEW SECTION: OPTIMAL PRICE BREAKDOWN (3) ---
+        st.subheader("3. Optimal Price Breakdown")
+        st.markdown("These are the solver-calculated prices for **maximum revenue**:")
+        
+        # Use st.columns to display the prices horizontally
+        num_cols = len(products) + 1
+        cols = st.columns(num_cols)
+
+        # 1. Bundle Price (Highlighted first)
+        with cols[0]:
+            st.markdown(f"""
+            <div class="price-card bundle-highlight">
+                <div class="price-title">ALL-IN BUNDLE</div>
+                <div class="price-tag">₹{bundle_price:,.0f}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        # 2. Individual Prices
+        for i, prod in enumerate(products):
+            p_opt = opt_prices[i]
+            clean_name = prod.replace("Samsung_", "").replace("_", " ")
+            with cols[i + 1]:
+                st.markdown(f"""
+                <div class="price-card">
+                    <div class="price-title">{clean_name}</div>
+                    <div class="price-tag">₹{p_opt:,.0f}</div>
+                </div>
+                """, unsafe_allow_html=True)
+
+        st.write("---")
+        
+        # --- MAIN PAGE BOTTOM: CHARTS & DATA (4) ---
         st.subheader("4. Behavioral Analysis")
         c_left, c_right = st.columns([1, 1])
         
