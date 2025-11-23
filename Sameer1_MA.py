@@ -11,10 +11,10 @@ st.set_page_config(
     page_title="Dynamic Pricing Optimizer",
     page_icon="📈",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded" # Changed to expanded to show pricing mix immediately
 )
 
-# --- CUSTOM CSS (Severe Aesthetic Change: Dark Mode / Orange Accent) ---
+# --- CUSTOM CSS (Severe Aesthetic Change: Dark Mode / Cyan Accent) ---
 st.markdown("""
 <style>
     /* Main container styling: Deep Slate Background */
@@ -23,61 +23,66 @@ st.markdown("""
         color: #f8fafc; /* Light text */
     }
     
+    /* Sidebar Styling */
+    [data-testid="stSidebar"] {
+        background-color: #334155; /* Medium Slate for sidebar */
+        border-right: 2px solid #06b6d4; /* Cyan border */
+    }
+    
     /* Metric Cards: Darker Cards on Dark Background */
     .metric-box {
         background: #334155; /* Medium Slate */
         padding: 20px;
         border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.4); /* Stronger shadow for contrast */
-        border-left: 5px solid #f97316; /* Bold Orange Primary Color */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        border-left: 5px solid #06b6d4; /* Vibrant Cyan Primary Color */
     }
     .metric-label { font-size: 0.9rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; }
     .metric-value { font-size: 2.2rem; color: #f8fafc; font-weight: 800; }
     .metric-delta { font-size: 1rem; font-weight: 700; }
-    .positive { color: #4ade80; } /* Bright Green for positive changes */
+    .positive { color: #34d399; } /* Teal Green for positive changes */
     
-    /* Insight Box */
+    /* Insight Box (Now Full Width) */
     .insight-card {
-        background-color: #334155;
+        background-color: #1e293b; /* Primary dark background for card */
         border: 1px solid #475569;
         border-radius: 10px;
         padding: 20px;
-        height: 100%;
+        margin-bottom: 20px; /* Space between insights and metrics */
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .insight-header { font-size: 1.1rem; font-weight: bold; color: #f8fafc; margin-bottom: 15px; display: flex; align-items: center; }
+    .insight-header { font-size: 1.2rem; font-weight: bold; color: #06b6d4; margin-bottom: 15px; display: flex; align-items: center; }
     .recommendation {
-        background: #1e293b; /* Primary dark background for recommendation boxes */
-        border-left: 4px solid #f97316; /* Bold Orange Accent */
+        background: #1e293b; 
+        border-left: 4px solid #06b6d4; /* Vibrant Cyan Accent */
         padding: 12px;
         margin-bottom: 12px;
         border-radius: 0 8px 8px 0;
-        color: #f8fafc; /* Ensure text inside is light */
+        color: #f8fafc;
     }
     /* Adjusted inline styles for contrast in AI Insights */
-    .recommendation[style*="#f59e0b"] { border-left-color: #facc15 !important; background: #2f3e53 !important; }
+    .recommendation[style*="#facc15"] { border-left-color: #facc15 !important; background: #2f3e53 !important; }
     .recommendation[style*="#ef4444"] { border-left-color: #ef4444 !important; background: #2f3e53 !important; }
     
-    /* Pricing Cards */
+    /* Pricing Cards (Now in Sidebar) */
     .price-card {
-        background: #334155;
-        padding: 20px 15px;
-        border-radius: 12px;
+        background: #1e293b; /* Darker background in sidebar */
+        padding: 15px 10px;
+        border-radius: 8px;
         text-align: center;
         border: 1px solid #475569;
-        transition: transform 0.2s, box-shadow 0.2s;
+        margin-bottom: 10px;
     }
-    .price-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.3); }
-    .price-title { font-size: 0.9rem; color: #94a3b8; font-weight: bold; text-transform: uppercase; height: 30px; display: flex; align-items: center; justify-content: center; }
-    .price-tag { font-size: 1.5rem; font-weight: 900; color: #f97316; margin: 5px 0; }
+    .price-title { font-size: 0.8rem; color: #94a3b8; font-weight: bold; text-transform: uppercase; height: 30px; display: flex; align-items: center; justify-content: center; }
+    .price-tag { font-size: 1.4rem; font-weight: 900; color: #06b6d4; margin: 5px 0; }
     .bundle-highlight {
-        background: linear-gradient(135deg, #f97316, #fb923c); /* Bold Orange Gradient */
-        color: #1e293b !important; /* Dark text on bright background */
+        background: linear-gradient(135deg, #06b6d4, #22d3ee); /* Cyan Gradient */
+        color: #1e293b !important;
         border: none;
-        box-shadow: 0 8px 16px rgba(249, 115, 22, 0.4);
+        box-shadow: 0 4px 8px rgba(6, 182, 212, 0.4);
     }
     .bundle-highlight .price-title, .bundle-highlight .price-tag { 
-        color: #1e293b !important; /* Force dark text on bundle */
+        color: #1e293b !important; 
         text-shadow: none; 
     }
 </style>
@@ -87,13 +92,14 @@ st.markdown("""
 @st.cache_data
 def load_data():
     """Loads the WTP data directly from the specified backend file."""
-    FILE_NAME = "SameerS.csv"
+    # NOTE: File name changed to "Samsung_Sankalp.csv" to match uploaded file in chat history
+    FILE_NAME = "SameerS.csv" 
     try:
         df = pd.read_csv(FILE_NAME)
         st.success(f"Successfully loaded data from {FILE_NAME}. Optimization running automatically.")
         return df
     except FileNotFoundError:
-        st.error(f"FATAL ERROR: The data file '{FILE_NAME}' was not found in the application directory.")
+        st.error(f"FATAL ERROR: The data file '{FILE_NAME}' was not found in the application directory. Please ensure it is uploaded.")
         st.stop()
         
 # --- 2. OPTIMIZATION ENGINE (No Change) ---
@@ -214,8 +220,8 @@ def generate_demand_curve(df, products, optimal_prices):
 # --- MAIN APP ---
 
 def main():
-    st.title("🌑 Dynamic Pricing Optimization Engine") 
-    st.markdown("This dashboard runs the Mixed Bundling optimization automatically using the embedded data file.")
+    st.title("🚀 Dynamic Pricing Optimization Dashboard") 
+    st.markdown("---")
 
     df = load_data()
     products = df.columns.tolist()
@@ -234,9 +240,77 @@ def main():
         sum_indiv_opt = np.sum(opt_prices[:-1])
         discount = ((sum_indiv_opt - bundle_price) / sum_indiv_opt) * 100
         bundle_adoption = (len(customer_df[customer_df['Decision'] == 'Bundle']) / len(df)) * 100
+
+        # --- SIDEBAR: PRICING MIX (New Location) ---
+        with st.sidebar:
+            st.header("3. Optimal Pricing Mix")
+            st.markdown("These are the solver-calculated prices for **maximum revenue**:")
+            
+            # Bundle Price (Highlighted first)
+            st.markdown(f"""
+            <div class="price-card bundle-highlight">
+                <div class="price-title">ALL-IN BUNDLE</div>
+                <div class="price-tag">₹{bundle_price:,.0f}</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("---")
+            st.subheader("Individual Product Prices")
+
+            # Individual Prices
+            for i, prod in enumerate(products):
+                p_opt = opt_prices[i]
+                clean_name = prod.replace("Samsung_", "").replace("_", " ")
+                st.markdown(f"""
+                <div class="price-card">
+                    <div class="price-title">{clean_name}</div>
+                    <div class="price-tag">₹{p_opt:,.0f}</div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+        # --- MAIN PAGE TOP: AI STRATEGIC INSIGHTS (New Full-Width Location) ---
+        st.subheader("1. AI Strategic Insights")
         
-        # --- SECTION 1: METRICS ---
-        st.markdown("### 1. Financial Overview")
+        strategy_text = "Volume Driver" if discount > 15 else "Premium Extraction"
+        marketing_focus = "Value-for-Money" if discount > 15 else "Exclusivity & Convenience"
+
+        # Using columns for the insights to use the full width more effectively
+        i1, i2, i3 = st.columns(3)
+        with i1:
+            st.markdown(f"""
+            <div class="insight-card">
+                <div class="recommendation">
+                    <strong>🎯 Pricing Strategy: {strategy_text}</strong><br>
+                    The solver suggests a <strong>{discount:.1f}% discount</strong> on the bundle, 
+                    making individual items act as anchors.
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        with i2:
+            st.markdown(f"""
+            <div class="insight-card">
+                <div class="recommendation" style="border-left-color: #facc15;">
+                    <strong>📢 Marketing Angle: {marketing_focus}</strong><br>
+                    Focus marketing on "Ecosystem Savings" - saving <strong>₹{(sum_indiv_opt - bundle_price):,.0f}</strong> 
+                    compared to individual items.
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        with i3:
+            st.markdown(f"""
+            <div class="insight-card">
+                <div class="recommendation" style="border-left-color: #ef4444;">
+                    <strong>📉 Competitor Analysis</strong><br>
+                    Your optimal bundle price effectively prices each item at 
+                    <strong>₹{(bundle_price/len(products)):,.0f}</strong> avg.
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        st.write("---")
+
+        # --- MAIN PAGE MIDDLE: FINANCIAL METRICS (New Location) ---
+        st.subheader("2. Financial Overview")
         c1, c2, c3 = st.columns(3)
         with c1:
             st.markdown(f"""
@@ -265,41 +339,42 @@ def main():
             
         st.write("---")
 
-        # --- SECTION 2: SPLIT VIEW (AI & Customers) ---
-        c_left, c_right = st.columns([1, 2])
+        # --- MAIN PAGE BOTTOM: CHARTS & DATA (New 1:1 Column Split) ---
+        st.subheader("4. Behavioral Analysis")
+        c_left, c_right = st.columns([1, 1])
         
         with c_left:
-            st.subheader("2. AI Strategic Insights")
+            st.markdown("#### Bundle Demand Sensitivity 
+
+[Image of a standard supply and demand curve with labels]
+")
             
-            strategy_text = "Volume Driver" if discount > 15 else "Premium Extraction"
-            marketing_focus = "Value-for-Money" if discount > 15 else "Exclusivity & Convenience"
+            demand_data = generate_demand_curve(df, products, opt_prices)
             
-            st.markdown(f"""
-            <div class="insight-card">
-                <div class="recommendation">
-                    <strong>🎯 Pricing Strategy: {strategy_text}</strong><br>
-                    The solver suggests a <strong>{discount:.1f}% discount</strong> on the bundle. 
-                    Individual prices are set high to act as anchors, making the bundle price of 
-                    <strong>₹{bundle_price:,.0f}</strong> the rational choice for most buyers.
-                </div>
-                <div class="recommendation" style="border-left-color: #facc15;">
-                    <strong>📢 Marketing Angle: {marketing_focus}</strong><br>
-                    Focus marketing on the "Total Ecosystem Savings". 
-                    Highlight that buying the bundle saves <strong>₹{(sum_indiv_opt - bundle_price):,.0f}</strong> 
-                    compared to individual items.
-                </div>
-                <div class="recommendation" style="border-left-color: #ef4444;">
-                    <strong>📉 Competitor Analysis</strong><br>
-                    Your optimal bundle price effectively prices each item at 
-                    <strong>₹{(bundle_price/len(products)):,.0f}</strong> avg. 
-                    Use this unit metric to undercut single-product competitors.
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            # NOTE: Plotly figures are customized for the dark/cyan theme
+            fig = px.line(
+                demand_data, x="Price", y="Demand",
+                title="Projected Bundle Sales vs. Price",
+                labels={"Price": "Bundle Price (₹)", "Demand": "Number of Buyers"}
+            )
             
+            fig.add_vline(x=bundle_price, line_dash="dash", line_color="#facc15", annotation_text="Optimal Price")
+            
+            # Update plot layout for dark mode
+            fig.update_layout(
+                height=400, 
+                hovermode="x unified",
+                plot_bgcolor='#334155', # Dark plot background
+                paper_bgcolor='#1e293b', # Main dark background
+                font=dict(color='#f8fafc') # Light text
+            )
+            
+            fig.update_traces(line_color='#06b6d4', fill='tozeroy', fillcolor='rgba(6, 182, 212, 0.1)') # Cyan line
+            
+            st.plotly_chart(fig, use_container_width=True)
+
         with c_right:
-            st.subheader("Customer Purchase Decisions")
-            # NOTE: For dark mode, Streamlit Dataframe uses its own CSS, which typically handles the dark theme well.
+            st.markdown("#### Customer Purchase Decisions")
             st.dataframe(
                 customer_df,
                 column_config={
@@ -309,72 +384,14 @@ def main():
                         format="₹%d",
                         min_value=0,
                         max_value=int(customer_df['Consumer Surplus'].max()),
+                        # Note: Progress bar color relies on Streamlit's internal theme
                     ),
                     "Decision": st.column_config.TextColumn(),
                 },
                 use_container_width=True,
-                height=350,
+                height=400,
                 hide_index=True
             )
-
-        st.write("---")
-
-        # --- SECTION 3: PRICING MIXES ---
-        st.subheader("3. Optimal Pricing Mix")
-        st.markdown("The solver calculated these price points to maximize total revenue:")
-        
-        cols = st.columns(len(products) + 1)
-        
-        # Individual Prices
-        for i, prod in enumerate(products):
-            p_opt = opt_prices[i]
-            clean_name = prod.replace("Samsung_", "").replace("_", " ")
-            with cols[i]:
-                st.markdown(f"""
-                <div class="price-card">
-                    <div class="price-title">{clean_name}</div>
-                    <div class="price-tag">₹{p_opt:,.0f}</div>
-                </div>
-                """, unsafe_allow_html=True)
-        
-        # Bundle Price
-        with cols[-1]:
-            st.markdown(f"""
-            <div class="price-card bundle-highlight">
-                <div class="price-title">ALL-IN BUNDLE</div>
-                <div class="price-tag">₹{bundle_price:,.0f}</div>
-            </div>
-            """, unsafe_allow_html=True)
-
-        st.write("---")
-
-        # --- SECTION 4: DEMAND CURVE ---
-        st.subheader("4. Bundle Demand Sensitivity")
-        
-        demand_data = generate_demand_curve(df, products, opt_prices)
-        
-        # NOTE: Plotly figures are also customized for the dark theme
-        fig = px.line(
-            demand_data, x="Price", y="Demand",
-            title="Projected Bundle Sales at Different Price Points",
-            labels={"Price": "Bundle Price (₹)", "Demand": "Number of Buyers"}
-        )
-        
-        # Add vertical line for optimal price
-        fig.add_vline(x=bundle_price, line_dash="dash", line_color="#facc15", annotation_text="Optimal Price")
-        
-        # Update plot layout for dark mode
-        fig.update_layout(
-            height=400, 
-            hovermode="x unified",
-            plot_bgcolor='#334155', # Dark plot background
-            paper_bgcolor='#1e293b', # Main dark background
-            font=dict(color='#f8fafc') # Light text
-        )
-        
-        fig.update_traces(line_color='#f97316', fill='tozeroy', fillcolor='rgba(249, 115, 22, 0.1)') # Orange line
-        
-        st.plotly_chart(fig, use_container_width=True)
 
 if __name__ == "__main__":
     main()
