@@ -344,7 +344,7 @@ def main():
         c_left, c_right = st.columns([1, 1])
         
         with c_left:
-            st.markdown("#### Bundle Demand Sensitivity 
+            st.markdown("#### Bundle Demand Sensitivity")
 
 [Image of a standard supply and demand curve with labels]
 ")
