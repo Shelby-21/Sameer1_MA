@@ -14,75 +14,75 @@ st.set_page_config(
     initial_sidebar_state="expanded" 
 )
 
-# --- CUSTOM CSS (Severe Aesthetic Change: Dark Mode / Cyan Accent) ---
+# --- CUSTOM CSS (New Aesthetic: Light Mode / Professional Teal Accent) ---
 st.markdown("""
 <style>
-    /* Main container styling: Deep Slate Background */
+    /* Main container styling: Light Gray Background */
     .main { 
-        background-color: #1e293b;
-        color: #f8fafc; /* Light text */
+        background-color: #f0f2f6; /* Light gray */
+        color: #263238; /* Dark Slate Text */
     }
     
     /* Sidebar Styling */
     [data-testid="stSidebar"] {
-        background-color: #334155; /* Medium Slate for sidebar */
-        border-right: 2px solid #06b6d4; /* Cyan border */
+        background-color: #ffffff; /* White sidebar */
+        border-right: 2px solid #00a896; /* Professional Teal Accent */
     }
     
-    /* Metric Cards: Darker Cards on Dark Background */
+    /* Metric Cards: Clean White Cards on Light Background */
     .metric-box {
-        background: #334155; /* Medium Slate */
+        background: #ffffff; /* White */
         padding: 20px;
         border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        border-left: 5px solid #06b6d4; /* Vibrant Cyan Primary Color */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Subtle shadow */
+        border-left: 5px solid #00a896; /* Professional Teal Primary Color */
     }
-    .metric-label { font-size: 0.9rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; }
-    .metric-value { font-size: 2.2rem; color: #f8fafc; font-weight: 800; }
+    .metric-label { font-size: 0.9rem; color: #78909c; font-weight: 600; text-transform: uppercase; }
+    .metric-value { font-size: 2.2rem; color: #263238; font-weight: 800; }
     .metric-delta { font-size: 1rem; font-weight: 700; }
-    .positive { color: #34d399; } /* Teal Green for positive changes */
+    .positive { color: #388e3c; } /* Dark Green for positive changes */
     
     /* Insight Box (Now Full Width) */
     .insight-card {
-        background-color: #1e293b; /* Primary dark background for card */
-        border: 1px solid #475569;
+        background-color: #f0f2f6; /* Primary light background for card */
+        border: 1px solid #cfd8dc;
         border-radius: 10px;
         padding: 20px;
-        margin-bottom: 20px; /* Space between insights and metrics */
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
-    .insight-header { font-size: 1.2rem; font-weight: bold; color: #06b6d4; margin-bottom: 15px; display: flex; align-items: center; }
+    .insight-header { font-size: 1.2rem; font-weight: bold; color: #00a896; margin-bottom: 15px; display: flex; align-items: center; }
     .recommendation {
-        background: #1e293b; 
-        border-left: 4px solid #06b6d4; /* Vibrant Cyan Accent */
+        background: #ffffff; 
+        border-left: 4px solid #00a896; /* Professional Teal Accent */
         padding: 12px;
         margin-bottom: 12px;
         border-radius: 0 8px 8px 0;
-        color: #f8fafc;
+        color: #263238;
     }
-    /* Adjusted inline styles for contrast in AI Insights */
-    .recommendation[style*="#facc15"] { border-left-color: #facc15 !important; background: #2f3e53 !important; }
-    .recommendation[style*="#ef4444"] { border-left-color: #ef4444 !important; background: #2f3e53 !important; }
+    /* Adjusted inline styles for contrast in AI Insights (Light Mode) */
+    .recommendation[style*="#ffb300"] { border-left-color: #ffb300 !important; background: #fff8e1 !important; } /* Amber */
+    .recommendation[style*="#d32f2f"] { border-left-color: #d32f2f !important; background: #ffebee !important; } /* Red */
     
     /* Pricing Cards (Now in Sidebar) */
     .price-card {
-        background: #1e293b; /* Darker background in sidebar */
+        background: #f5f5f5; /* Slightly darker background in sidebar */
         padding: 15px 10px;
         border-radius: 8px;
         text-align: center;
-        border: 1px solid #475569;
+        border: 1px solid #cfd8dc;
         margin-bottom: 10px;
     }
-    .price-title { font-size: 0.8rem; color: #94a3b8; font-weight: bold; text-transform: uppercase; height: 30px; display: flex; align-items: center; justify-content: center; }
-    .price-tag { font-size: 1.4rem; font-weight: 900; color: #06b6d4; margin: 5px 0; }
+    .price-title { font-size: 0.8rem; color: #78909c; font-weight: bold; text-transform: uppercase; height: 30px; display: flex; align-items: center; justify-content: center; }
+    .price-tag { font-size: 1.4rem; font-weight: 900; color: #00a896; margin: 5px 0; }
     .bundle-highlight {
-        background: linear-gradient(135deg, #06b6d4, #22d3ee); /* Cyan Gradient */
-        color: #1e293b !important;
+        background: #00a896; /* Solid Teal */
+        color: #ffffff !important;
         border: none;
-        box-shadow: 0 4px 8px rgba(6, 182, 212, 0.4);
+        box-shadow: 0 4px 8px rgba(0, 168, 150, 0.4);
     }
     .bundle-highlight .price-title, .bundle-highlight .price-tag { 
-        color: #1e293b !important; 
+        color: #ffffff !important; 
         text-shadow: none; 
     }
 </style>
@@ -92,7 +92,6 @@ st.markdown("""
 @st.cache_data
 def load_data():
     """Loads the WTP data directly from the specified backend file."""
-    # Using the correct file name as identified in previous steps
     FILE_NAME = "SameerS.csv" 
     try:
         df = pd.read_csv(FILE_NAME)
@@ -289,7 +288,7 @@ def main():
         with i2:
             st.markdown(f"""
             <div class="insight-card">
-                <div class="recommendation" style="border-left-color: #facc15;">
+                <div class="recommendation" style="border-left-color: #ffb300;"> 
                     <strong>📢 Marketing Angle: {marketing_focus}</strong><br>
                     Focus marketing on "Ecosystem Savings" - saving <strong>₹{(sum_indiv_opt - bundle_price):,.0f}</strong> 
                     compared to individual items.
@@ -299,7 +298,7 @@ def main():
         with i3:
             st.markdown(f"""
             <div class="insight-card">
-                <div class="recommendation" style="border-left-color: #ef4444;">
+                <div class="recommendation" style="border-left-color: #d32f2f;"> 
                     <strong>📉 Competitor Analysis</strong><br>
                     Your optimal bundle price effectively prices each item at 
                     <strong>₹{(bundle_price/len(products)):,.0f}</strong> avg.
@@ -322,18 +321,18 @@ def main():
             """, unsafe_allow_html=True)
         with c2:
             st.markdown(f"""
-            <div class="metric-box" style="border-left-color: #facc15;">
+            <div class="metric-box" style="border-left-color: #ffb300;"> 
                 <div class="metric-label">Consumer Surplus</div>
                 <div class="metric-value">₹{total_surplus:,.0f}</div>
-                <div class="metric-delta" style="color:#94a3b8;">Value Retained by Users</div>
+                <div class="metric-delta" style="color:#78909c;">Value Retained by Users</div>
             </div>
             """, unsafe_allow_html=True)
         with c3:
             st.markdown(f"""
-            <div class="metric-box" style="border-left-color: #ef4444;">
+            <div class="metric-box" style="border-left-color: #d32f2f;"> 
                 <div class="metric-label">Bundle Adoption</div>
                 <div class="metric-value">{bundle_adoption:.0f}%</div>
-                <div class="metric-delta" style="color:#94a3b8;">Conversion Rate</div>
+                <div class="metric-delta" style="color:#78909c;">Conversion Rate</div>
             </div>
             """, unsafe_allow_html=True)
             
@@ -344,30 +343,31 @@ def main():
         c_left, c_right = st.columns([1, 1])
         
         with c_left:
-            # FIX: Properly closed st.markdown string and removed placeholder tag
             st.markdown("#### Bundle Demand Sensitivity") 
             
             demand_data = generate_demand_curve(df, products, opt_prices)
             
-            # NOTE: Plotly figures are customized for the dark/cyan theme
+            # NOTE: Plotly figures are customized for the light/teal theme
             fig = px.line(
                 demand_data, x="Price", y="Demand",
                 title="Projected Bundle Sales vs. Price",
                 labels={"Price": "Bundle Price (₹)", "Demand": "Number of Buyers"}
             )
             
-            fig.add_vline(x=bundle_price, line_dash="dash", line_color="#facc15", annotation_text="Optimal Price")
+            # Use Amber for optimal price marker
+            fig.add_vline(x=bundle_price, line_dash="dash", line_color="#ffb300", annotation_text="Optimal Price") 
             
-            # Update plot layout for dark mode
+            # Update plot layout for light mode
             fig.update_layout(
                 height=400, 
                 hovermode="x unified",
-                plot_bgcolor='#334155', # Dark plot background
-                paper_bgcolor='#1e293b', # Main dark background
-                font=dict(color='#f8fafc') # Light text
+                plot_bgcolor='#ffffff', # White plot background
+                paper_bgcolor='#f0f2f6', # Main light background
+                font=dict(color='#263238') # Dark text
             )
             
-            fig.update_traces(line_color='#06b6d4', fill='tozeroy', fillcolor='rgba(6, 182, 212, 0.1)') # Cyan line
+            # Use Teal line color
+            fig.update_traces(line_color='#00a896', fill='tozeroy', fillcolor='rgba(0, 168, 150, 0.1)') 
             
             st.plotly_chart(fig, use_container_width=True)
 
