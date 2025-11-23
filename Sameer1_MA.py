@@ -11,7 +11,7 @@ st.set_page_config(
     page_title="Dynamic Pricing Optimizer",
     page_icon="📈",
     layout="wide",
-    initial_sidebar_state="expanded" # Changed to expanded to show pricing mix immediately
+    initial_sidebar_state="expanded" 
 )
 
 # --- CUSTOM CSS (Severe Aesthetic Change: Dark Mode / Cyan Accent) ---
@@ -92,8 +92,8 @@ st.markdown("""
 @st.cache_data
 def load_data():
     """Loads the WTP data directly from the specified backend file."""
-    # NOTE: File name changed to "Samsung_Sankalp.csv" to match uploaded file in chat history
-    FILE_NAME = "SameerS.csv" 
+    # Using the correct file name as identified in previous steps
+    FILE_NAME = "Samsung_Sankalp.csv" 
     try:
         df = pd.read_csv(FILE_NAME)
         st.success(f"Successfully loaded data from {FILE_NAME}. Optimization running automatically.")
@@ -344,10 +344,8 @@ def main():
         c_left, c_right = st.columns([1, 1])
         
         with c_left:
-            st.markdown("#### Bundle Demand Sensitivity")
-
-[Image of a standard supply and demand curve with labels]
-")
+            # FIX: Properly closed st.markdown string and removed placeholder tag
+            st.markdown("#### Bundle Demand Sensitivity") 
             
             demand_data = generate_demand_curve(df, products, opt_prices)
             
