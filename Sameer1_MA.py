@@ -93,7 +93,7 @@ st.markdown("""
 def load_data():
     """Loads the WTP data directly from the specified backend file."""
     # Using the correct file name as identified in previous steps
-    FILE_NAME = "Samsung_Sankalp.csv" 
+    FILE_NAME = "SameerS.csv" 
     try:
         df = pd.read_csv(FILE_NAME)
         st.success(f"Successfully loaded data from {FILE_NAME}. Optimization running automatically.")
